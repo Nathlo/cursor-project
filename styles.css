@@ -103,6 +103,11 @@ body {
     background-color: var(--gb-button);
     border: none;
     box-shadow: 2px 2px 0 var(--gb-button-shadow);
+    color: #ffffff;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .dpad button:active {
@@ -165,6 +170,10 @@ body {
     border-radius: 10px;
     transform: rotate(-25deg);
     box-shadow: 2px 2px 0 var(--gb-button-shadow);
+    color: #ffffff;
+    font-size: 8px;
+    text-transform: uppercase;
+    font-weight: bold;
 }
 
 .next-piece-display {
@@ -177,4 +186,9 @@ body {
     grid-template-rows: repeat(4, 1fr);
     gap: 1px;
     border: 2px solid var(--gb-accent);
+}
+
+.dpad button:hover,
+.start-select button:hover {
+    background-color: #3f3f3f;
 } 
