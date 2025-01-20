@@ -5,6 +5,8 @@ class Tetris {
         this.level = 1;
         this.gameBoard = document.querySelector('.game-board');
         this.currentPiece = null;
+        this.nextPiece = null;
+        this.nextPieceDisplay = document.querySelector('.next-piece-display');
         this.gameInterval = null;
         this.isGameOver = false;
 
@@ -63,6 +65,7 @@ class Tetris {
         this.level = 1;
         this.grid = Array(20).fill().map(() => Array(10).fill(0));
         this.initializeBoard();
+        this.nextPiece = this.generatePiece();
         this.spawnPiece();
         
         if (this.gameInterval) clearInterval(this.gameInterval);
@@ -71,13 +74,23 @@ class Tetris {
         }, 1000 - (this.level * 50));
     }
 
-    spawnPiece() {
+    generatePiece() {
         const pieceIndex = Math.floor(Math.random() * this.pieces.length);
-        this.currentPiece = {
+        return {
             shape: this.pieces[pieceIndex],
             x: Math.floor((10 - this.pieces[pieceIndex][0].length) / 2),
             y: 0
         };
+    }
+
+    spawnPiece() {
+        if (!this.nextPiece) {
+            this.nextPiece = this.generatePiece();
+        }
+        
+        this.currentPiece = this.nextPiece;
+        this.nextPiece = this.generatePiece();
+        this.renderNextPiece();
 
         if (this.checkCollision()) {
             this.gameOver();
@@ -211,6 +224,34 @@ class Tetris {
                     this.currentPiece.x + x >= 0 && 
                     this.currentPiece.x + x < 10) {
                     cells[(this.currentPiece.y + y) * 10 + this.currentPiece.x + x].classList.add('filled');
+                }
+            });
+        });
+    }
+
+    renderNextPiece() {
+        // Nettoyer l'affichage
+        this.nextPieceDisplay.innerHTML = '';
+        
+        // Créer une grille 4x4 pour l'affichage
+        for (let i = 0; i < 16; i++) {
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+            this.nextPieceDisplay.appendChild(cell);
+        }
+
+        // Centrer la pièce dans l'affichage
+        const cells = this.nextPieceDisplay.getElementsByClassName('cell');
+        const offsetY = Math.floor((4 - this.nextPiece.shape.length) / 2);
+        const offsetX = Math.floor((4 - this.nextPiece.shape[0].length) / 2);
+
+        this.nextPiece.shape.forEach((row, y) => {
+            row.forEach((cell, x) => {
+                if (cell) {
+                    const index = (y + offsetY) * 4 + (x + offsetX);
+                    if (index >= 0 && index < cells.length) {
+                        cells[index].classList.add('filled');
+                    }
                 }
             });
         });
